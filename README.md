@@ -37,8 +37,40 @@ npm run typecheck
 npm run build
 ```
 
-`OPENAI_API_KEY` and `OPENAI_MODEL` are documented in `.env.example`, but the
-application does not use them or call OpenAI during Milestone 1.
+`OPENAI_MODEL` is reserved for answer generation in a later milestone.
+
+## Milestone 2: knowledge-base ingestion
+
+The ingestion command validates and uploads only `DOC-001` through `DOC-006`.
+`ASSISTANT_INSTRUCTIONS.md` is deliberately excluded because it contains
+higher-priority application instructions rather than searchable store knowledge.
+
+1. Add your API key to the local `.env` file. Never commit or paste the key:
+
+   ```dotenv
+   OPENAI_API_KEY=your_key_here
+   ```
+
+2. Run the ingestion command:
+
+   ```bash
+   npm run ingest:kb
+   ```
+
+If `OPENAI_VECTOR_STORE_ID` is empty, the command creates a vector store named
+`DemoShop Knowledge Base`. It uploads the six documents, attaches `document_id`
+and `source_filename` attributes to each vector-store file, and waits until the
+batch finishes indexing. Newly created stores expire 30 days after their last
+active time to avoid retaining an abandoned vector index indefinitely.
+
+3. Copy the printed ID into `.env`:
+
+   ```dotenv
+   OPENAI_VECTOR_STORE_ID=vs_...
+   ```
+
+The command accepts a configured existing store only when it is empty. This
+guard prevents accidentally duplicating the knowledge base on repeated runs.
 
 ## Sources to index
 Index DOC-001 through DOC-006 as retrieval documents. Retain their IDs and metadata for evaluation. DOC-005 is a complete static catalog for this test version; it is not live inventory.
@@ -58,7 +90,7 @@ Use ASSISTANT_INSTRUCTIONS.md as the assistant's system/developer-level instruct
 
 [x] Milestone 1: TypeScript project setup and Fastify health endpoint.
 
-[] Milestone 2: Knowledge-base ingestion into OpenAI Vector Stores.
+[x] Milestone 2: Knowledge-base ingestion into OpenAI Vector Stores.
 
 [] Milestone 3: Explicit retrieval with source metadata.
 
