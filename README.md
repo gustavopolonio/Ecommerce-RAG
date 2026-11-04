@@ -72,6 +72,22 @@ active time to avoid retaining an abandoned vector index indefinitely.
 The command accepts a configured existing store only when it is empty. This
 guard prevents accidentally duplicating the knowledge base on repeated runs.
 
+## Milestone 3: explicit retrieval
+
+The retrieval layer searches the configured vector store for the top five
+results and preserves each result's text, document ID, filename, file ID, and
+similarity score. Keeping this stage separate makes retrieval quality measurable
+without involving answer generation.
+
+Run the manual retrieval demo with:
+
+```bash
+npm run retrieve:explicit
+```
+
+This command contacts the OpenAI API. The automated tests use mocks and do not
+make network calls.
+
 ## Sources to index
 Index DOC-001 through DOC-006 as retrieval documents. Retain their IDs and metadata for evaluation. DOC-005 is a complete static catalog for this test version; it is not live inventory.
 
@@ -92,7 +108,7 @@ Use ASSISTANT_INSTRUCTIONS.md as the assistant's system/developer-level instruct
 
 [x] Milestone 2: Knowledge-base ingestion into OpenAI Vector Stores.
 
-[] Milestone 3: Explicit retrieval with source metadata.
+[x] Milestone 3: Explicit retrieval with source metadata.
 
 [] Milestone 4: RAG answer generation and POST /chat endpoint.
 

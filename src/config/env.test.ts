@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getServerConfig } from "./env.js";
+import { getOpenAIRetrievalConfig, getServerConfig } from "./env.js";
 
 describe("getServerConfig", () => {
   it("uses safe local defaults", () => {
@@ -21,5 +21,27 @@ describe("getServerConfig", () => {
     expect(() => getServerConfig({ PORT: "not-a-port" })).toThrow(
       "PORT must be an integer between 1 and 65535.",
     );
+  });
+});
+
+describe("getOpenAIRetrievalConfig", () => {
+  it("reads and trims the retrieval configuration", () => {
+    expect(
+      getOpenAIRetrievalConfig({
+        OPENAI_API_KEY: " secret ",
+        OPENAI_VECTOR_STORE_ID: " vs-demo ",
+      }),
+    ).toEqual({
+      apiKey: "secret",
+      vectorStoreId: "vs-demo",
+    });
+  });
+
+  it("rejects an incomplete retrieval configuration", () => {
+    expect(() =>
+      getOpenAIRetrievalConfig({
+        OPENAI_API_KEY: "secret",
+      }),
+    ).toThrow("OPENAI_VECTOR_STORE_ID is required");
   });
 });

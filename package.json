@@ -11,6 +11,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.build.json",
     "ingest:kb": "node --import tsx src/scripts/ingest-knowledge-base.ts",
+    "retrieve:explicit": "node --import tsx src/scripts/explicit-retrieve.ts",
     "start": "node dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",

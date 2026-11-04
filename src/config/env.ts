@@ -6,6 +6,11 @@ export interface ServerConfig {
   port: number;
 }
 
+export interface OpenAIRetrievalConfig {
+  apiKey: string;
+  vectorStoreId: string;
+}
+
 function parsePort(value: string | undefined): number {
   if (value === undefined || value.trim() === "") {
     return DEFAULT_PORT;
@@ -27,4 +32,28 @@ export function getServerConfig(
     host: env.HOST?.trim() || DEFAULT_HOST,
     port: parsePort(env.PORT),
   };
+}
+
+export function getOpenAIRetrievalConfig(
+  env: NodeJS.ProcessEnv = process.env,
+): OpenAIRetrievalConfig {
+  return {
+    apiKey: requireEnvironmentVariable(env, "OPENAI_API_KEY"),
+    vectorStoreId: requireEnvironmentVariable(env, "OPENAI_VECTOR_STORE_ID"),
+  };
+}
+
+function requireEnvironmentVariable(
+  env: NodeJS.ProcessEnv,
+  name: "OPENAI_API_KEY" | "OPENAI_VECTOR_STORE_ID",
+): string {
+  const value = env[name]?.trim();
+
+  if (!value) {
+    throw new Error(
+      `${name} is required. Add it to your local .env file; never commit secrets.`,
+    );
+  }
+
+  return value;
 }
