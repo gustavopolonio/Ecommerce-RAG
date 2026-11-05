@@ -9,9 +9,10 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && mkdir -p dist/instructions && cp src/instructions/ASSISTANT_INSTRUCTIONS.md dist/instructions/ASSISTANT_INSTRUCTIONS.md",
     "ingest:kb": "node --import tsx src/scripts/ingest-knowledge-base.ts",
     "retrieve:explicit": "node --import tsx src/scripts/explicit-retrieve.ts",
+    "rag:demo": "node --import tsx src/scripts/explicit-retrieve-and-response.ts",
     "start": "node dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",

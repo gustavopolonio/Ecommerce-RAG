@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { getOpenAIRetrievalConfig, getServerConfig } from "./env.js";
+import {
+  getOpenAIConfig,
+  getOpenAIRetrievalConfig,
+  getServerConfig,
+} from "./env.js";
 
 describe("getServerConfig", () => {
   it("uses safe local defaults", () => {
@@ -24,12 +28,26 @@ describe("getServerConfig", () => {
   });
 });
 
-describe("getOpenAIRetrievalConfig", () => {
-  it("reads and trims the retrieval configuration", () => {
+describe("getOpenAIConfig", () => {
+  it("reads and trims the OpenAI configuration", () => {
+    expect(
+      getOpenAIConfig({
+        OPENAI_API_KEY: " secret ",
+        OPENAI_MODEL: " test-model ",
+        OPENAI_VECTOR_STORE_ID: " vs-demo ",
+      }),
+    ).toEqual({
+      apiKey: "secret",
+      model: "test-model",
+      vectorStoreId: "vs-demo",
+    });
+  });
+
+  it("allows retrieval configuration without a generation model", () => {
     expect(
       getOpenAIRetrievalConfig({
-        OPENAI_API_KEY: " secret ",
-        OPENAI_VECTOR_STORE_ID: " vs-demo ",
+        OPENAI_API_KEY: "secret",
+        OPENAI_VECTOR_STORE_ID: "vs-demo",
       }),
     ).toEqual({
       apiKey: "secret",
@@ -37,11 +55,12 @@ describe("getOpenAIRetrievalConfig", () => {
     });
   });
 
-  it("rejects an incomplete retrieval configuration", () => {
+  it("rejects an incomplete OpenAI configuration before an API call", () => {
     expect(() =>
-      getOpenAIRetrievalConfig({
+      getOpenAIConfig({
         OPENAI_API_KEY: "secret",
+        OPENAI_VECTOR_STORE_ID: "vs-demo",
       }),
-    ).toThrow("OPENAI_VECTOR_STORE_ID is required");
+    ).toThrow("OPENAI_MODEL is required");
   });
 });

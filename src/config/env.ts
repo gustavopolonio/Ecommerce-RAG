@@ -11,6 +11,10 @@ export interface OpenAIRetrievalConfig {
   vectorStoreId: string;
 }
 
+export interface OpenAIConfig extends OpenAIRetrievalConfig {
+  model: string;
+}
+
 function parsePort(value: string | undefined): number {
   if (value === undefined || value.trim() === "") {
     return DEFAULT_PORT;
@@ -34,6 +38,17 @@ export function getServerConfig(
   };
 }
 
+export function getOpenAIConfig(
+  env: NodeJS.ProcessEnv = process.env,
+): OpenAIConfig {
+  const retrievalConfig = getOpenAIRetrievalConfig(env);
+
+  return {
+    ...retrievalConfig,
+    model: requireEnvironmentVariable(env, "OPENAI_MODEL"),
+  };
+}
+
 export function getOpenAIRetrievalConfig(
   env: NodeJS.ProcessEnv = process.env,
 ): OpenAIRetrievalConfig {
@@ -45,7 +60,7 @@ export function getOpenAIRetrievalConfig(
 
 function requireEnvironmentVariable(
   env: NodeJS.ProcessEnv,
-  name: "OPENAI_API_KEY" | "OPENAI_VECTOR_STORE_ID",
+  name: "OPENAI_API_KEY" | "OPENAI_MODEL" | "OPENAI_VECTOR_STORE_ID",
 ): string {
   const value = env[name]?.trim();
 

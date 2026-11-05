@@ -37,7 +37,7 @@ npm run typecheck
 npm run build
 ```
 
-`OPENAI_MODEL` is reserved for answer generation in a later milestone.
+`OPENAI_MODEL` selects the model used for answer generation.
 
 ## Milestone 2: knowledge-base ingestion
 
@@ -88,6 +88,47 @@ npm run retrieve:explicit
 This command contacts the OpenAI API. The automated tests use mocks and do not
 make network calls.
 
+## Milestone 4: RAG answers and `POST /chat`
+
+Set `OPENAI_MODEL` in `.env`, start the server, and send a question:
+
+```bash
+npm run dev
+curl -X POST http://127.0.0.1:3000/chat \
+  -H 'content-type: application/json' \
+  -d '{"question":"Can I pay by Pix?"}'
+```
+
+The endpoint performs explicit retrieval, assembles attributed context, and
+then calls the Responses API. It returns the generated answer plus the evidence
+needed for later evaluation:
+
+```json
+{
+  "message": "Yes, DemoShop accepts Pix.",
+  "sources": [
+    {
+      "fileId": "file_...",
+      "filename": "DOC-001_payment_policy.md",
+      "documentId": "DOC-001",
+      "sourceFilename": "DOC-001_payment_policy.md",
+      "score": 0.98
+    }
+  ],
+  "usage": {
+    "inputTokens": 100,
+    "outputTokens": 20,
+    "totalTokens": 120
+  },
+  "latencyMs": 450.25
+}
+```
+
+`npm run rag:demo` runs three live retrieval-and-generation examples. Both
+manual demo commands contact OpenAI and should be treated as potentially
+billable operations. The assistant should obtain confirmation before running
+them on the user's behalf.
+
 ## Sources to index
 Index DOC-001 through DOC-006 as retrieval documents. Retain their IDs and metadata for evaluation. DOC-005 is a complete static catalog for this test version; it is not live inventory.
 
@@ -110,7 +151,7 @@ Use ASSISTANT_INSTRUCTIONS.md as the assistant's system/developer-level instruct
 
 [x] Milestone 3: Explicit retrieval with source metadata.
 
-[] Milestone 4: RAG answer generation and POST /chat endpoint.
+[x] Milestone 4: RAG answer generation and POST /chat endpoint.
 
 [] Milestone 5: Evaluation dataset integration.
 
