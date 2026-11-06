@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+
+description: DemoShop RAG offline evaluation
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: http
+    label: DemoShop POST /chat
+    config:
+      url: http://127.0.0.1:3000/chat
+      method: POST
+      headers:
+        content-type: application/json
+      body:
+        question: "{{question}}"
+      transformResponse: file://evaluation/transforms/chat-response.cjs
+      maxRetries: 0
+
+defaultTest:
+  options:
+    provider:
+      id: "openai:responses:{{ env.OPENAI_MODEL }}"
+      config:
+        maxRetries: 0
+
+tests: file://evaluation/promptfoo-cases.json
+
+evaluateOptions:
+  maxConcurrency: 1
+  delay: 250
+  cache: false
+  timeoutMs: 60000
+
+outputPath:
+  - evaluation/results/latest.json
+  - evaluation/results/latest.html
+
+sharing: false
+writeLatestResults: false

@@ -146,6 +146,47 @@ assertions are added in Milestone 6.
 
 This operation is entirely local and does not call OpenAI.
 
+## Milestone 6: Promptfoo offline evaluations
+
+`npm run evaluation:build` now also generates
+`evaluation/promptfoo-cases.json`. The Promptfoo suite evaluates the HTTP API
+with four explicit signals:
+
+- Recall@5 for the 35 cases with expected knowledge-base documents.
+- Eight deterministic checks for strict formatting or exact catalog values.
+- LLM rubric grading with a `0.8` pass threshold for answer quality.
+- A 15-second per-request latency ceiling.
+
+Validate the configuration without starting the API or calling OpenAI:
+
+```bash
+npm run eval:validate
+```
+
+For a live evaluation, start the API in one terminal:
+
+```bash
+npm run dev
+```
+
+Then run either the first three cases or the complete dataset in another:
+
+```bash
+npm run eval:smoke
+npm run eval:offline
+```
+
+Both live commands can incur OpenAI charges. The smoke run makes three
+DemoShop requests and three rubric-judge requests. The complete run makes 40
+DemoShop requests and 38 rubric-judge requests. Each DemoShop request performs
+vector-store retrieval followed by answer generation. Retries are disabled,
+concurrency is limited to one, and caching is disabled so latency assertions
+measure real requests. Both the application and rubric judge use the model in
+`OPENAI_MODEL`.
+
+Promptfoo stores the latest JSON and HTML reports under `evaluation/results/`.
+That directory and Promptfoo's local state directory are excluded from Git.
+
 ## Sources to index
 Index DOC-001 through DOC-006 as retrieval documents. Retain their IDs and metadata for evaluation. DOC-005 is a complete static catalog for this test version; it is not live inventory.
 
@@ -172,7 +213,7 @@ Use ASSISTANT_INSTRUCTIONS.md as the assistant's system/developer-level instruct
 
 [x] Milestone 5: Evaluation dataset integration.
 
-[] Milestone 6: Promptfoo offline evaluations.
+[x] Milestone 6: Promptfoo offline evaluations.
 
 [] Milestone 7: Comparative evaluation experiments and reporting.
 
