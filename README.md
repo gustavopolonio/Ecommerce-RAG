@@ -129,6 +129,23 @@ manual demo commands contact OpenAI and should be treated as potentially
 billable operations. The assistant should obtain confirmation before running
 them on the user's behalf.
 
+## Milestone 5: evaluation dataset integration
+
+The original `RAG-Ecommercedataset.csv` remains the editable source of truth.
+Generate the normalized Promptfoo-compatible JSON dataset with:
+
+```bash
+npm run evaluation:build
+```
+
+The command locates the CSV header after its leading empty rows, validates all
+40 cases, normalizes compound categories, targets, document IDs, and scoring
+methods, and writes `evaluation/cases.json`. The generated file contains
+Promptfoo-native `description`, `vars`, and `metadata` fields. Executable
+assertions are added in Milestone 6.
+
+This operation is entirely local and does not call OpenAI.
+
 ## Sources to index
 Index DOC-001 through DOC-006 as retrieval documents. Retain their IDs and metadata for evaluation. DOC-005 is a complete static catalog for this test version; it is not live inventory.
 
@@ -153,7 +170,7 @@ Use ASSISTANT_INSTRUCTIONS.md as the assistant's system/developer-level instruct
 
 [x] Milestone 4: RAG answer generation and POST /chat endpoint.
 
-[] Milestone 5: Evaluation dataset integration.
+[x] Milestone 5: Evaluation dataset integration.
 
 [] Milestone 6: Promptfoo offline evaluations.
 
