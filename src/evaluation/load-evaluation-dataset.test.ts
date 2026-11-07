@@ -63,6 +63,17 @@ describe("loadEvaluationDataset", () => {
     );
   });
 
+  it("keeps reviewed rubric corrections for grounded answers", async () => {
+    const cases = await loadEvaluationDataset(sourcePath);
+
+    expect(findCase(cases, "006").metadata.expectedAnswerOrRubric).toContain(
+      "Additional policy details are acceptable",
+    );
+    expect(findCase(cases, "014").metadata.expectedAnswerOrRubric).toContain(
+      "cannot calculate an address-specific or ZIP-specific estimate",
+    );
+  });
+
   it("keeps the generated Promptfoo JSON synchronized with the CSV", async () => {
     const [cases, generatedJson] = await Promise.all([
       loadEvaluationDataset(sourcePath),

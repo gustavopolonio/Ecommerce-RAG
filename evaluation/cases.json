@@ -150,7 +150,7 @@
         "DOC-002"
       ],
       "expectedBehavior": "Check return policy and follow the exact format without omitting essential data",
-      "expectedAnswerOrRubric": "Use exactly 3 bullet points; include the 30-day window after delivery, eligibility conditions, and how to request a return; do not invent exceptions.",
+      "expectedAnswerOrRubric": "Use exactly 3 bullet points. Include the 30-day window after delivery, eligibility conditions, and the return-request process. Additional policy details are acceptable when they agree with DOC-002, including non-returnable products, refund timing, and warranty assistance.",
       "failureCategories": [
         "formatting_violation",
         "incomplete_policy_information"
@@ -368,8 +368,8 @@
       "expectedDocumentIds": [
         "DOC-003"
       ],
-      "expectedBehavior": "Ask the customer for their postal code or delivery location and avoid inventing an estimated delivery time.",
-      "expectedAnswerOrRubric": "Ask for the customer's delivery location or ZIP code; do not infer their home address or promise an exact delivery date.",
+      "expectedBehavior": "Provide the documented general delivery ranges while explaining that DemoShop cannot calculate an address-specific or ZIP-specific delivery date.",
+      "expectedAnswerOrRubric": "Provide the documented general delivery ranges; explain that DemoShop cannot calculate an address-specific or ZIP-specific estimate; do not infer the customer's home address or promise an exact delivery date.",
       "failureCategories": [
         "invented_location",
         "unsupported_delivery_estimate"
