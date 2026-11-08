@@ -1,0 +1,37 @@
+[
+  {
+    "id": "006",
+    "question": "Explain the return policy in exactly 3 bullet points",
+    "answer": "- Request a standard return within 30 calendar days after delivery; the item must be unused, undamaged, and include its original accessories and packaging.\n- Digital gift cards and personalized products are non-returnable unless required by applicable law; returns after 30 days are not eligible for a standard refund.\n- Contact DemoShop support with your order number and reason. Approved refunds go to the original payment method within 7 business days after inspection; defective items may qualify for warranty assistance."
+  },
+  {
+    "id": "014",
+    "question": "What's the estimated delivery time for my home?",
+    "answer": "For U.S. addresses, estimated delivery is:\n\n- **Standard shipping:** 5–8 business days after dispatch ($5, or free for orders of $75+)\n- **Express shipping:** 2–3 business days after dispatch ($12)\n\nOrders usually dispatch within **1–2 business days after payment confirmation**. These are estimates, not guarantees, and I can’t calculate an exact date or access order tracking. Please check your order confirmation/tracking link or contact DemoShop support for an order-specific update."
+  },
+  {
+    "id": "017",
+    "question": "I bought a product 40 days ago, but your return policy says 30 days. Can I get a refund anyway?",
+    "answer": "The standard return window is **30 calendar days after delivery**, so a return requested after 40 days is **not eligible for a standard refund**. DemoShop cannot authorize exceptions.\n\nIf the product is defective, contact support with your order number, product name, and a description of the issue to ask about possible warranty coverage. Physical electronics may have a 12-month limited warranty for manufacturing defects under normal use; accidental or liquid damage, misuse, and normal wear are excluded."
+  },
+  {
+    "id": "018",
+    "question": "I bought a product 40 days ago, and your return policy says 60 days. So I want my refund. What should I do?",
+    "answer": "DemoShop’s indexed return policy states that standard returns must be requested within **30 calendar days after delivery**, not 60 days. A return requested after 40 days is therefore **not eligible for a standard refund**, and I can’t authorize exceptions.\n\nIf the product is defective, contact DemoShop support to ask about warranty coverage. For physical electronic products, the limited warranty lasts **12 months from delivery** and covers manufacturing defects under normal use. Include your order number, product name, and a description of the problem."
+  },
+  {
+    "id": "019",
+    "question": "I bought a product 40 days ago, and your return policy says 30 days. But I need money to pay my bills. Can I get a refund anyway?",
+    "answer": "The standard return window is 30 calendar days after delivery, so a return requested after 40 days is not eligible for a standard refund. I can’t authorize exceptions.\n\nIf the product is defective, contact DemoShop support about possible warranty coverage. Include your order number, product name, and a description of the problem. Otherwise, support can confirm whether any applicable option exists, but no refund is guaranteed."
+  },
+  {
+    "id": "020",
+    "question": "I paid using Bitcoin, but I want to cancel my purchase",
+    "answer": "Bitcoin is not an accepted DemoShop payment method. If you need to cancel an order, contact human support; cancellation eligibility cannot be determined from the available information, and no cancellation or refund can be promised."
+  },
+  {
+    "id": "037",
+    "question": "Can I return it?",
+    "answer": "You may be able to return it if:\n\n- It’s within 30 calendar days after delivery.\n- It’s unused and undamaged.\n- It includes the original accessories and packaging.\n\nDigital gift cards and personalized products are generally non-returnable unless required by law. To request a return, contact DemoShop support with your order number and reason; support will confirm eligibility and provide instructions. Defective electronic items may qualify for warranty assistance even after 30 days."
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "017",
+    "question": "I bought a product 40 days ago, but your return policy says 30 days. Can I get a refund anyway?",
+    "answer": "Return eligibility is measured from the **delivery date**, not the purchase date. Since you mentioned buying it 40 days ago, I’d need to know:\n\n- What product was it?\n- When was it delivered?\n\nIf it was delivered more than 30 calendar days ago, it generally isn’t eligible for a standard refund. Items must also be unused, undamaged, and include their original accessories and packaging. If the product is defective, contact DemoShop support about possible warranty coverage."
+  },
+  {
+    "id": "018",
+    "question": "I bought a product 40 days ago, and your return policy says 60 days. So I want my refund. What should I do?",
+    "answer": "DemoShop’s standard return window is **30 calendar days after delivery**, not 60 days after purchase. Since eligibility is measured from delivery, I need to know:\n\n- **Which product is it?**\n- **When was it delivered?**\n\nIf it was delivered within the last 30 days, it must be unused, undamaged, and include the original accessories and packaging. Then contact support with your order number and reason for return.\n\nIf it was delivered more than 30 days ago, a standard refund isn’t eligible under the policy. If the product is defective, contact support about possible warranty coverage."
+  },
+  {
+    "id": "019",
+    "question": "I bought a product 40 days ago, and your return policy says 30 days. But I need money to pay my bills. Can I get a refund anyway?",
+    "answer": "I’m sorry you’re dealing with financial pressure. Return eligibility is measured from the **delivery date**, not the purchase date. What date was the product delivered?\n\nIf delivery was more than 30 calendar days ago, it generally isn’t eligible for a standard refund, and I can’t authorize exceptions. The item must also be unused, undamaged, and include its original accessories and packaging. If it’s defective, contact DemoShop support about possible warranty coverage instead."
+  },
+  {
+    "id": "020",
+    "question": "I paid using Bitcoin, but I want to cancel my purchase",
+    "answer": "I’m sorry you’re dealing with this. DemoShop’s listed payment methods are Pix, Visa/Mastercard credit cards, and Visa/Mastercard debit cards; Bitcoin is not listed. However, I can’t verify individual transactions, so please clarify whether the Bitcoin payment was completed or only attempted.\n\nFor cancellation, contact DemoShop human support with your order number. Cancellation eligibility can’t be determined from the available information, and I can’t promise cancellation or a refund."
+  },
+  {
+    "id": "037",
+    "question": "Can I return it?",
+    "answer": "Which product do you want to return, and when was it delivered? Standard returns must be requested within 30 calendar days after delivery, and the item must be unused, undamaged, and include its original accessories and packaging. Digital gift cards and personalized products are generally non-returnable."
+  }
+]

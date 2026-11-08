@@ -12,6 +12,17 @@ const deterministic = require(
 const transformChatResponse = require(
   "../../evaluation/transforms/chat-response.cjs",
 ) as (json: unknown) => unknown;
+const ReplayResponsesProvider = require(
+  "../../evaluation/providers/replay-responses.cjs",
+) as new (options: {
+  config: { providerId: string; responsesFile: string };
+}) => {
+  id(): string;
+  callApi(
+    prompt: string,
+    context: { vars: { caseId: string } },
+  ): Promise<{ output?: string; error?: string }>;
+};
 
 interface AssertionResult {
   pass: boolean;
@@ -121,5 +132,38 @@ describe("chat response transform", () => {
     expect(() => transformChatResponse({ message: "Answer" })).toThrow(
       "sources array",
     );
+  });
+});
+
+describe("pairwise replay provider", () => {
+  it("returns a stored baseline answer by case ID", async () => {
+    const provider = new ReplayResponsesProvider({
+      config: {
+        providerId: "baseline",
+        responsesFile: "evaluation/comparison/baseline.json",
+      },
+    });
+
+    const response = await provider.callApi("question", {
+      vars: { caseId: "017" },
+    });
+
+    expect(provider.id()).toBe("replay:baseline");
+    expect(response.output).toContain("30 calendar days after delivery");
+  });
+
+  it("returns an error for a response that was not stored", async () => {
+    const provider = new ReplayResponsesProvider({
+      config: {
+        providerId: "baseline",
+        responsesFile: "evaluation/comparison/baseline.json",
+      },
+    });
+
+    await expect(
+      provider.callApi("question", { vars: { caseId: "999" } }),
+    ).resolves.toEqual({
+      error: "No baseline response was stored for case 999.",
+    });
   });
 });

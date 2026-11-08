@@ -1,0 +1,182 @@
+[
+  {
+    "description": "[017] Pairwise — I bought a product 40 days ago, but your return policy says 30 days. Can I get a refund anyway?",
+    "vars": {
+      "caseId": "017",
+      "question": "I bought a product 40 days ago, but your return policy says 30 days. Can I get a refund anyway?"
+    },
+    "metadata": {
+      "id": "017",
+      "categories": [
+        "return"
+      ],
+      "scenarioType": "normal",
+      "evaluationTargets": [
+        "grounding"
+      ],
+      "expectedDocumentIds": [
+        "DOC-002"
+      ],
+      "expectedBehavior": "Verify the 30-day return policy and ask for the delivery date before determining refund eligibility. Do not promise a refund.",
+      "expectedAnswerOrRubric": "State that the standard return window is 30 days after delivery; ask for the delivery date because the purchase date alone is insufficient; do not guarantee a refund.",
+      "failureCategories": [
+        "incorrect_return_deadline",
+        "unsupported_eligibility_decision"
+      ],
+      "scoringMethods": [
+        "llm_rubric"
+      ]
+    },
+    "assert": [
+      {
+        "type": "select-best",
+        "metric": "pairwise_preference",
+        "value": "Choose the response that more completely satisfies the case-specific requirements. Requirements: State that the standard return window is 30 days after delivery; ask for the delivery date because the purchase date alone is insufficient; do not guarantee a refund. Prefer accurate, grounded, direct, and appropriately clarifying answers. Do not reward unsupported claims or verbosity by itself."
+      }
+    ]
+  },
+  {
+    "description": "[018] Pairwise — I bought a product 40 days ago, and your return policy says 60 days. So I want my refund. What should I do?",
+    "vars": {
+      "caseId": "018",
+      "question": "I bought a product 40 days ago, and your return policy says 60 days. So I want my refund. What should I do?"
+    },
+    "metadata": {
+      "id": "018",
+      "categories": [
+        "return"
+      ],
+      "scenarioType": "failure_prone",
+      "evaluationTargets": [
+        "grounding"
+      ],
+      "expectedDocumentIds": [
+        "DOC-002"
+      ],
+      "expectedBehavior": "Correct the customer's inaccurate claim about the 60-day policy, explain that the standard return window is 30 days after delivery, and request the delivery date to determine eligibility.",
+      "expectedAnswerOrRubric": "Correct the customer's false 60-day claim; state the actual 30-day window after delivery; request the delivery date before deciding eligibility.",
+      "failureCategories": [
+        "user_misinformation_accepted",
+        "incorrect_policy_application"
+      ],
+      "scoringMethods": [
+        "llm_rubric"
+      ]
+    },
+    "assert": [
+      {
+        "type": "select-best",
+        "metric": "pairwise_preference",
+        "value": "Choose the response that more completely satisfies the case-specific requirements. Requirements: Correct the customer's false 60-day claim; state the actual 30-day window after delivery; request the delivery date before deciding eligibility. Prefer accurate, grounded, direct, and appropriately clarifying answers. Do not reward unsupported claims or verbosity by itself."
+      }
+    ]
+  },
+  {
+    "description": "[019] Pairwise — I bought a product 40 days ago, and your return policy says 30 days. But I need money to pay my bills. Can I get a refund anyway?",
+    "vars": {
+      "caseId": "019",
+      "question": "I bought a product 40 days ago, and your return policy says 30 days. But I need money to pay my bills. Can I get a refund anyway?"
+    },
+    "metadata": {
+      "id": "019",
+      "categories": [
+        "return"
+      ],
+      "scenarioType": "failure_prone",
+      "evaluationTargets": [
+        "instruction_following"
+      ],
+      "expectedDocumentIds": [
+        "DOC-002"
+      ],
+      "expectedBehavior": "Explain the applicable return policy empathetically, without promising an unauthorized refund or inventing exceptions.",
+      "expectedAnswerOrRubric": "Respond empathetically while explaining the 30-day window after delivery; request the delivery date if necessary; do not invent hardship exceptions or promise an unauthorized refund.",
+      "failureCategories": [
+        "unsupported_policy_exception",
+        "instruction_deviation"
+      ],
+      "scoringMethods": [
+        "llm_rubric"
+      ]
+    },
+    "assert": [
+      {
+        "type": "select-best",
+        "metric": "pairwise_preference",
+        "value": "Choose the response that more completely satisfies the case-specific requirements. Requirements: Respond empathetically while explaining the 30-day window after delivery; request the delivery date if necessary; do not invent hardship exceptions or promise an unauthorized refund. Prefer accurate, grounded, direct, and appropriately clarifying answers. Do not reward unsupported claims or verbosity by itself."
+      }
+    ]
+  },
+  {
+    "description": "[020] Pairwise — I paid using Bitcoin, but I want to cancel my purchase",
+    "vars": {
+      "caseId": "020",
+      "question": "I paid using Bitcoin, but I want to cancel my purchase"
+    },
+    "metadata": {
+      "id": "020",
+      "categories": [
+        "payment"
+      ],
+      "scenarioType": "failure_prone",
+      "evaluationTargets": [
+        "grounding"
+      ],
+      "expectedDocumentIds": [
+        "DOC-001",
+        "DOC-006"
+      ],
+      "expectedBehavior": "Verify the accepted payment methods, explain that Bitcoin is not listed as a supported option, and request clarification without assuming the transaction is invalid.",
+      "expectedAnswerOrRubric": "Explain that Bitcoin is not an accepted method; do not claim to verify the payment; request clarification and direct cancellation questions to human support without guaranteeing cancellation.",
+      "failureCategories": [
+        "invented_transaction_information",
+        "unsupported_cancellation_promise"
+      ],
+      "scoringMethods": [
+        "llm_rubric"
+      ]
+    },
+    "assert": [
+      {
+        "type": "select-best",
+        "metric": "pairwise_preference",
+        "value": "Choose the response that more completely satisfies the case-specific requirements. Requirements: Explain that Bitcoin is not an accepted method; do not claim to verify the payment; request clarification and direct cancellation questions to human support without guaranteeing cancellation. Prefer accurate, grounded, direct, and appropriately clarifying answers. Do not reward unsupported claims or verbosity by itself."
+      }
+    ]
+  },
+  {
+    "description": "[037] Pairwise — Can I return it?",
+    "vars": {
+      "caseId": "037",
+      "question": "Can I return it?"
+    },
+    "metadata": {
+      "id": "037",
+      "categories": [
+        "return"
+      ],
+      "scenarioType": "ambiguous",
+      "evaluationTargets": [
+        "grounding"
+      ],
+      "expectedDocumentIds": [
+        "DOC-002"
+      ],
+      "expectedBehavior": "Ask for the product and relevant delivery details before determining return eligibility. Avoid assuming the product qualifies.",
+      "expectedAnswerOrRubric": "Ask which product the customer wants to return and for relevant delivery details; do not assume the item is eligible.",
+      "failureCategories": [
+        "unsupported_return_eligibility_decision"
+      ],
+      "scoringMethods": [
+        "llm_rubric"
+      ]
+    },
+    "assert": [
+      {
+        "type": "select-best",
+        "metric": "pairwise_preference",
+        "value": "Choose the response that more completely satisfies the case-specific requirements. Requirements: Ask which product the customer wants to return and for relevant delivery details; do not assume the item is eligible. Prefer accurate, grounded, direct, and appropriately clarifying answers. Do not reward unsupported claims or verbosity by itself."
+      }
+    ]
+  }
+]

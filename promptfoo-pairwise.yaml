@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+
+description: DemoShop baseline versus improved-answer pairwise evaluation
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: file://evaluation/providers/replay-responses.cjs
+    label: Candidate A — baseline
+    config:
+      providerId: baseline
+      responsesFile: evaluation/comparison/baseline.json
+  - id: file://evaluation/providers/replay-responses.cjs
+    label: Candidate B — improved instructions
+    config:
+      providerId: candidate-b
+      responsesFile: evaluation/comparison/candidate-b.json
+
+defaultTest:
+  options:
+    provider:
+      id: "openai:responses:{{ env.OPENAI_MODEL }}"
+      config:
+        maxRetries: 0
+
+tests: file://evaluation/comparison/pairwise-cases.json
+
+evaluateOptions:
+  maxConcurrency: 1
+  delay: 250
+  cache: false
+  timeoutMs: 60000
+
+outputPath:
+  - evaluation/results/pairwise-latest.json
+  - evaluation/results/pairwise-latest.html
+
+sharing: false
+writeLatestResults: false

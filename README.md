@@ -187,6 +187,49 @@ measure real requests. Both the application and rubric judge use the model in
 Promptfoo stores the latest JSON and HTML reports under `evaluation/results/`.
 That directory and Promptfoo's local state directory are excluded from Git.
 
+## Pairwise baseline versus improved responses
+
+The pairwise experiment compares the original responses with responses produced
+after improving the assistant instructions. Cases 006 and 014 are preserved in
+the baseline fixture because they exposed rubric problems, but the actual
+pairwise comparison covers only the five answer-quality failures: 017, 018,
+019, 020, and 037.
+
+Extract the original seven failed responses from the most recent full report:
+
+```bash
+npm run evaluation:pairwise:extract-baseline
+```
+
+This is local and free. After changing the assistant instructions, restart the
+DemoShop development server so it reloads the instruction file. Then generate
+Candidate B:
+
+```bash
+CONFIRM_PAID_EVAL=true npm run evaluation:pairwise:generate-candidate
+```
+
+Candidate generation makes five sequential DemoShop requests. Each request
+performs vector-store retrieval and answer generation and can incur OpenAI
+charges. The command refuses to run without the explicit confirmation variable.
+
+Validate the pairwise configuration locally:
+
+```bash
+npm run eval:pairwise:validate
+```
+
+Run the comparison after both response files are populated:
+
+```bash
+npm run eval:pairwise
+```
+
+The two response providers only replay stored answers, but Promptfoo's
+`select-best` assertion makes one rubric-judge request per case. The five-case
+comparison can therefore incur five additional OpenAI requests. Its JSON and
+HTML reports are written to `evaluation/results/pairwise-latest.*`.
+
 ## Sources to index
 Index DOC-001 through DOC-006 as retrieval documents. Retain their IDs and metadata for evaluation. DOC-005 is a complete static catalog for this test version; it is not live inventory.
 
