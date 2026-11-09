@@ -8,7 +8,7 @@ new evaluation workflow reaches feature parity.
 ## Current status
 
 - [x] Step 1: isolated TypeScript project foundation.
-- [ ] Step 2: LangChain retriever for the existing OpenAI vector store.
+- [x] Step 2: LangChain retriever for the existing OpenAI vector store.
 - [ ] Step 3: LangChain RAG chain using the existing assistant instructions.
 - [ ] Step 4: LangSmith tracing.
 - [ ] Step 5: Fastify `POST /chat` endpoint.
@@ -46,7 +46,18 @@ npm run build
 ```
 
 Keep `LANGSMITH_TRACING=false` until you intentionally want to send traces to
-LangSmith. The current foundation does not make OpenAI or LangSmith requests.
+LangSmith. The setup and quality-check commands above do not make OpenAI or
+LangSmith requests.
+
+## Step 2: retrieval
+
+The custom `OpenAIVectorStoreRetriever` searches the existing OpenAI vector
+store and converts each result into a LangChain `Document`. Retrieved text is
+stored in `pageContent`; file identifiers, filenames, similarity scores, and
+DemoShop document metadata are preserved in `metadata`.
+
+Read [docs/retrieval.md](docs/retrieval.md) for the complete flow, an example,
+the design decisions, cost boundary, and implementation sources.
 
 ## Why LangChain and LangSmith?
 
