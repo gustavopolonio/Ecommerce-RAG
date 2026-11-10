@@ -5,6 +5,10 @@ import { describe, expect, it } from "vitest";
 
 import type { OpenAIVectorStoreDocumentMetadata } from "../retrieval/openai-vector-store-retriever.js";
 import {
+  createDemoShopTraceConfig,
+  DEMO_SHOP_TRACE_NAMES,
+} from "../tracing/trace-contract.js";
+import {
   createDemoShopRagChain,
   NO_RELEVANT_CONTEXT_MESSAGE,
 } from "./demo-shop-rag-chain.js";
@@ -34,6 +38,64 @@ describe("createDemoShopRagChain", () => {
       ],
     });
     expect(model.i).toBe(1);
+  });
+
+  it("exposes the important RAG steps as stable runnable events", async () => {
+    const chain = createDemoShopRagChain({
+      assistantInstructions: "Answer using only DemoShop documents.",
+      model: new FakeListChatModel({ responses: ["Pix is accepted."] }),
+      retriever: new FakeDemoShopRetriever([createPaymentDocument()]),
+    }).withConfig(
+      createDemoShopTraceConfig({
+        apiKey: "unused-test-key",
+        model: "test-model",
+        vectorStoreId: "vs-demo",
+      }),
+    );
+    const startedRuns: Array<{
+      name: string;
+      tags: string[] | undefined;
+      metadata: Record<string, unknown>;
+    }> = [];
+
+    for await (const event of chain.streamEvents("Can I pay by Pix?", {
+      version: "v2",
+    })) {
+      if (event.event.endsWith("_start")) {
+        startedRuns.push({
+          name: event.name,
+          tags: event.tags,
+          metadata: event.metadata,
+        });
+      }
+    }
+
+    const importantRuns = startedRuns.filter(({ name }) =>
+      Object.values(DEMO_SHOP_TRACE_NAMES).includes(
+        name as (typeof DEMO_SHOP_TRACE_NAMES)[keyof typeof DEMO_SHOP_TRACE_NAMES],
+      ),
+    );
+
+    expect(importantRuns.map(({ name }) => name)).toEqual([
+      DEMO_SHOP_TRACE_NAMES.chain,
+      DEMO_SHOP_TRACE_NAMES.retrieveDocuments,
+      DEMO_SHOP_TRACE_NAMES.answerFromDocuments,
+      DEMO_SHOP_TRACE_NAMES.formatContext,
+      DEMO_SHOP_TRACE_NAMES.buildPrompt,
+      DEMO_SHOP_TRACE_NAMES.generateAnswer,
+    ]);
+    expect(importantRuns).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          tags: expect.arrayContaining(["demoshop", "rag", "two-step"]),
+          metadata: expect.objectContaining({
+            application: "demoshop-langchain-rag",
+            model: "test-model",
+            vectorStoreId: "vs-demo",
+          }),
+        }),
+      ]),
+    );
   });
 
   it("does not call the model when retrieval returns no documents", async () => {

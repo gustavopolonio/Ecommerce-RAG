@@ -10,7 +10,7 @@ new evaluation workflow reaches feature parity.
 - [x] Step 1: isolated TypeScript project foundation.
 - [x] Step 2: LangChain retriever for the existing OpenAI vector store.
 - [x] Step 3: LangChain RAG chain using the existing assistant instructions.
-- [ ] Step 4: LangSmith tracing.
+- [x] Step 4: optional LangSmith tracing with a stable local trace contract.
 - [ ] Step 5: Fastify `POST /chat` endpoint.
 - [ ] Step 6: import the existing CSV into a LangSmith dataset.
 - [ ] Step 7: TypeScript evaluation harness and evaluators.
@@ -68,6 +68,16 @@ metadata. It skips model generation when retrieval returns no documents.
 
 Read [docs/rag-chain.md](docs/rag-chain.md) for the complete flow, prompt
 hierarchy, runnable composition, test strategy, cost boundary, and sources.
+
+## Step 4: tracing
+
+The RAG chain exposes stable run names and metadata for LangSmith. Tests verify
+the hierarchy locally with fake dependencies, while remote tracing remains
+disabled by default and requires one explicit LangSmith destination.
+
+Read [docs/tracing.md](docs/tracing.md) for the trace hierarchy, workspace
+configuration choices, data and privacy boundary, local verification, and
+official sources.
 
 ## Why LangChain and LangSmith?
 

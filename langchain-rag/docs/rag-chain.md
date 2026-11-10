@@ -71,11 +71,13 @@ const result = await chain.invoke("Can I pay by Pix?");
 Internally, the chain is composed from named runnables:
 
 1. `retrieve_documents` validates the question and invokes the retriever.
-2. `generate_answer` formats the prompt and invokes the model.
-3. `answer_from_documents` returns the answer and source metadata.
-4. `demoshop_rag` is the name of the complete chain.
+2. `answer_from_documents` coordinates the grounded-answer branch.
+3. `format_context` converts retrieved documents into attributed JSON.
+4. `build_prompt` creates the developer and user messages.
+5. `generate_answer` invokes the model.
+6. `demoshop_rag` is the name of the complete chain.
 
-These stable names prepare the flow for LangSmith tracing in Step 4.
+These stable names form the LangSmith trace contract added in Step 4.
 
 If retrieval returns no documents, the chain returns the existing safe fallback
 message and does not call the model. This avoids spending generation tokens on

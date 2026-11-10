@@ -35,7 +35,6 @@ describe("getLangSmithConfig", () => {
   it("keeps tracing off by default without requiring a key", () => {
     expect(getLangSmithConfig({})).toEqual({
       tracingEnabled: false,
-      project: "demoshop-langchain-rag",
     });
   });
 
@@ -53,8 +52,58 @@ describe("getLangSmithConfig", () => {
     ).toEqual({
       tracingEnabled: true,
       apiKey: "ls-secret",
-      project: "learning-project",
+      destination: {
+        type: "project",
+        project: "learning-project",
+      },
     });
+  });
+
+  it("supports current agent addressing with a safe local default", () => {
+    expect(
+      getLangSmithConfig({
+        LANGSMITH_TRACING: "true",
+        LANGSMITH_API_KEY: "ls-secret",
+        LANGSMITH_AGENT_ID: " agent-demo ",
+      }),
+    ).toEqual({
+      tracingEnabled: true,
+      apiKey: "ls-secret",
+      destination: {
+        type: "agent",
+        agentId: "agent-demo",
+        environment: "local",
+      },
+    });
+  });
+
+  it("rejects missing or conflicting trace destinations", () => {
+    expect(() =>
+      getLangSmithConfig({
+        LANGSMITH_TRACING: "true",
+        LANGSMITH_API_KEY: "ls-secret",
+      }),
+    ).toThrow("LANGSMITH_AGENT_ID or LANGSMITH_PROJECT");
+
+    expect(() =>
+      getLangSmithConfig({
+        LANGSMITH_TRACING: "true",
+        LANGSMITH_API_KEY: "ls-secret",
+        LANGSMITH_AGENT_ID: "agent-demo",
+        LANGSMITH_PROJECT: "project-demo",
+      }),
+    ).toThrow("not both");
+  });
+
+  it("rejects unknown agent environments", () => {
+    expect(() =>
+      getLangSmithConfig({
+        LANGSMITH_TRACING: "true",
+        LANGSMITH_API_KEY: "ls-secret",
+        LANGSMITH_AGENT_ID: "agent-demo",
+        LANGSMITH_AGENT_ENVIRONMENT: "preview",
+      }),
+    ).toThrow("must be local, development, staging, or production");
   });
 
   it("rejects ambiguous tracing values", () => {
@@ -81,7 +130,6 @@ describe("getAppConfig", () => {
       },
       langSmith: {
         tracingEnabled: false,
-        project: "demoshop-langchain-rag",
       },
     });
   });

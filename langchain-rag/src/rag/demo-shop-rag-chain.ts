@@ -13,6 +13,10 @@ import {
   createOpenAIVectorStoreRetriever,
   type OpenAIVectorStoreDocumentMetadata,
 } from "../retrieval/openai-vector-store-retriever.js";
+import {
+  createDemoShopTraceConfig,
+  DEMO_SHOP_TRACE_NAMES,
+} from "../tracing/trace-contract.js";
 import { formatRetrievedContext } from "./context.js";
 import { createDemoShopPrompt } from "./prompt.js";
 
@@ -56,9 +60,15 @@ export function createDemoShopRagChain({
     assistantInstructions,
     "assistantInstructions",
   );
-  const promptAndModel = createDemoShopPrompt()
-    .pipe(model)
-    .withConfig({ runName: "generate_answer" });
+  const formatContext = RunnableLambda.from(formatRetrievedContext).withConfig({
+    runName: DEMO_SHOP_TRACE_NAMES.formatContext,
+  });
+  const buildPrompt = createDemoShopPrompt().withConfig({
+    runName: DEMO_SHOP_TRACE_NAMES.buildPrompt,
+  });
+  const generateAnswer = model.withConfig({
+    runName: DEMO_SHOP_TRACE_NAMES.generateAnswer,
+  });
 
   const retrieveDocuments = RunnableLambda.from(
     async (
@@ -70,7 +80,7 @@ export function createDemoShopRagChain({
 
       return { question: normalizedQuestion, documents };
     },
-  ).withConfig({ runName: "retrieve_documents" });
+  ).withConfig({ runName: DEMO_SHOP_TRACE_NAMES.retrieveDocuments });
 
   const answerFromDocuments = RunnableLambda.from(
     async (
@@ -92,14 +102,16 @@ export function createDemoShopRagChain({
         };
       }
 
-      const response = await promptAndModel.invoke(
+      const context = await formatContext.invoke(state.documents, config);
+      const prompt = await buildPrompt.invoke(
         {
           assistantInstructions: normalizedInstructions,
-          context: formatRetrievedContext(state.documents),
+          context,
           question: state.question,
         },
         config,
       );
+      const response = await generateAnswer.invoke(prompt, config);
       const message = response.text.trim();
 
       if (!message) {
@@ -108,10 +120,10 @@ export function createDemoShopRagChain({
 
       return { message, sources };
     },
-  ).withConfig({ runName: "answer_from_documents" });
+  ).withConfig({ runName: DEMO_SHOP_TRACE_NAMES.answerFromDocuments });
 
   return retrieveDocuments.pipe(answerFromDocuments).withConfig({
-    runName: "demoshop_rag",
+    runName: DEMO_SHOP_TRACE_NAMES.chain,
   });
 }
 
@@ -134,7 +146,7 @@ export async function createConfiguredDemoShopRagChain(
     assistantInstructions,
     model,
     retriever,
-  });
+  }).withConfig(createDemoShopTraceConfig(config));
 }
 
 function requireNonEmptyText(value: string, name: string): string {

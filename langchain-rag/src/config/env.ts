@@ -4,18 +4,30 @@ export interface OpenAIConfig {
   vectorStoreId: string;
 }
 
-export interface LangSmithConfig {
-  tracingEnabled: boolean;
-  apiKey?: string;
-  project: string;
-}
+export type LangSmithAgentEnvironment =
+  | "local"
+  | "development"
+  | "staging"
+  | "production";
+
+export type LangSmithConfig =
+  | { tracingEnabled: false }
+  | {
+      tracingEnabled: true;
+      apiKey: string;
+      destination:
+        | { type: "project"; project: string }
+        | {
+            type: "agent";
+            agentId: string;
+            environment: LangSmithAgentEnvironment;
+          };
+    };
 
 export interface AppConfig {
   openAI: OpenAIConfig;
   langSmith: LangSmithConfig;
 }
-
-const DEFAULT_LANGSMITH_PROJECT = "demoshop-langchain-rag";
 
 export function getAppConfig(
   env: NodeJS.ProcessEnv = process.env,
@@ -46,18 +58,69 @@ export function getLangSmithConfig(
     env.LANGSMITH_TRACING,
     "LANGSMITH_TRACING",
   );
-  const project =
-    env.LANGSMITH_PROJECT?.trim() || DEFAULT_LANGSMITH_PROJECT;
-
   if (!tracingEnabled) {
-    return { tracingEnabled, project };
+    return { tracingEnabled };
   }
 
-  return {
-    tracingEnabled,
-    apiKey: requireEnvironmentVariable(env, "LANGSMITH_API_KEY"),
-    project,
-  };
+  const apiKey = requireEnvironmentVariable(env, "LANGSMITH_API_KEY");
+  const agentId = env.LANGSMITH_AGENT_ID?.trim();
+  const project = env.LANGSMITH_PROJECT?.trim();
+
+  if (agentId && project) {
+    throw new Error(
+      "Choose one LangSmith destination: LANGSMITH_AGENT_ID or LANGSMITH_PROJECT, not both.",
+    );
+  }
+
+  if (agentId) {
+    return {
+      tracingEnabled,
+      apiKey,
+      destination: {
+        type: "agent",
+        agentId,
+        environment: parseLangSmithAgentEnvironment(
+          env.LANGSMITH_AGENT_ENVIRONMENT,
+        ),
+      },
+    };
+  }
+
+  if (project) {
+    return {
+      tracingEnabled,
+      apiKey,
+      destination: { type: "project", project },
+    };
+  }
+
+  throw new Error(
+    "Tracing requires LANGSMITH_AGENT_ID or LANGSMITH_PROJECT.",
+  );
+}
+
+function parseLangSmithAgentEnvironment(
+  value: string | undefined,
+): LangSmithAgentEnvironment {
+  const environment = value?.trim() || "local";
+  const supportedEnvironments: LangSmithAgentEnvironment[] = [
+    "local",
+    "development",
+    "staging",
+    "production",
+  ];
+
+  if (
+    !supportedEnvironments.includes(
+      environment as LangSmithAgentEnvironment,
+    )
+  ) {
+    throw new Error(
+      "LANGSMITH_AGENT_ENVIRONMENT must be local, development, staging, or production.",
+    );
+  }
+
+  return environment as LangSmithAgentEnvironment;
 }
 
 function parseBoolean(value: string | undefined, name: string): boolean {
