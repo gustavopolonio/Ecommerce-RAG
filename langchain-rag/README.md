@@ -9,7 +9,7 @@ new evaluation workflow reaches feature parity.
 
 - [x] Step 1: isolated TypeScript project foundation.
 - [x] Step 2: LangChain retriever for the existing OpenAI vector store.
-- [ ] Step 3: LangChain RAG chain using the existing assistant instructions.
+- [x] Step 3: LangChain RAG chain using the existing assistant instructions.
 - [ ] Step 4: LangSmith tracing.
 - [ ] Step 5: Fastify `POST /chat` endpoint.
 - [ ] Step 6: import the existing CSV into a LangSmith dataset.
@@ -58,6 +58,16 @@ DemoShop document metadata are preserved in `metadata`.
 
 Read [docs/retrieval.md](docs/retrieval.md) for the complete flow, an example,
 the design decisions, cost boundary, and implementation sources.
+
+## Step 3: RAG chain
+
+The runnable RAG chain loads the existing assistant instructions, retrieves
+attributed context, builds separate developer and user messages, invokes
+`ChatOpenAI` through the Responses API, and returns the answer with its source
+metadata. It skips model generation when retrieval returns no documents.
+
+Read [docs/rag-chain.md](docs/rag-chain.md) for the complete flow, prompt
+hierarchy, runnable composition, test strategy, cost boundary, and sources.
 
 ## Why LangChain and LangSmith?
 
