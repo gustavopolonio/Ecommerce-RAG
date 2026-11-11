@@ -23,7 +23,7 @@ ChatPromptTemplate
 ChatOpenAI (Responses API)
    |
    v
-answer + sources
+answer + sources + token usage
 ```
 
 ## Instruction hierarchy

@@ -1,4 +1,5 @@
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { AIMessage, type UsageMetadata } from "@langchain/core/messages";
 import type { BaseRetrieverInterface } from "@langchain/core/retrievers";
 import {
   RunnableLambda,
@@ -34,6 +35,13 @@ export interface RetrievedSource {
 export interface DemoShopRagResult {
   message: string;
   sources: RetrievedSource[];
+  usage: TokenUsage;
+}
+
+export interface TokenUsage {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
 }
 
 export interface DemoShopRagChainDependencies {
@@ -99,6 +107,7 @@ export function createDemoShopRagChain({
         return {
           message: NO_RELEVANT_CONTEXT_MESSAGE,
           sources,
+          usage: emptyTokenUsage(),
         };
       }
 
@@ -118,7 +127,11 @@ export function createDemoShopRagChain({
         throw new Error("The model returned an empty answer.");
       }
 
-      return { message, sources };
+      return {
+        message,
+        sources,
+        usage: mapTokenUsage(response),
+      };
     },
   ).withConfig({ runName: DEMO_SHOP_TRACE_NAMES.answerFromDocuments });
 
@@ -157,4 +170,31 @@ function requireNonEmptyText(value: string, name: string): string {
   }
 
   return normalizedValue;
+}
+
+export function mapTokenUsage(response: unknown): TokenUsage {
+  if (!AIMessage.isInstance(response)) {
+    return emptyTokenUsage();
+  }
+
+  const usage = (response as unknown as { usage_metadata?: UsageMetadata })
+    .usage_metadata;
+
+  if (!usage) {
+    return emptyTokenUsage();
+  }
+
+  return {
+    inputTokens: usage.input_tokens,
+    outputTokens: usage.output_tokens,
+    totalTokens: usage.total_tokens,
+  };
+}
+
+function emptyTokenUsage(): TokenUsage {
+  return {
+    inputTokens: 0,
+    outputTokens: 0,
+    totalTokens: 0,
+  };
 }

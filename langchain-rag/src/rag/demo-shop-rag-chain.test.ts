@@ -1,4 +1,5 @@
 import { Document } from "@langchain/core/documents";
+import { AIMessage } from "@langchain/core/messages";
 import { BaseRetriever } from "@langchain/core/retrievers";
 import { FakeListChatModel } from "@langchain/core/utils/testing";
 import { describe, expect, it } from "vitest";
@@ -10,6 +11,7 @@ import {
 } from "../tracing/trace-contract.js";
 import {
   createDemoShopRagChain,
+  mapTokenUsage,
   NO_RELEVANT_CONTEXT_MESSAGE,
 } from "./demo-shop-rag-chain.js";
 
@@ -36,6 +38,7 @@ describe("createDemoShopRagChain", () => {
           score: 0.97,
         },
       ],
+      usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
     });
     expect(model.i).toBe(1);
   });
@@ -111,8 +114,25 @@ describe("createDemoShopRagChain", () => {
     await expect(chain.invoke("Unknown policy")).resolves.toEqual({
       message: NO_RELEVANT_CONTEXT_MESSAGE,
       sources: [],
+      usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
     });
     expect(model.i).toBe(0);
+  });
+
+  it("maps LangChain AI message usage into the API token contract", () => {
+    const response = Object.assign(new AIMessage("Pix is accepted."), {
+      usage_metadata: {
+        input_tokens: 20,
+        output_tokens: 6,
+        total_tokens: 26,
+      },
+    });
+
+    expect(mapTokenUsage(response)).toEqual({
+      inputTokens: 20,
+      outputTokens: 6,
+      totalTokens: 26,
+    });
   });
 
   it("rejects empty questions and instructions before generation", async () => {
