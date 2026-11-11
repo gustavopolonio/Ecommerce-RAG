@@ -11,7 +11,7 @@ new evaluation workflow reaches feature parity.
 - [x] Step 2: LangChain retriever for the existing OpenAI vector store.
 - [x] Step 3: LangChain RAG chain using the existing assistant instructions.
 - [x] Step 4: optional LangSmith tracing with a stable local trace contract.
-- [ ] Step 5: Fastify `POST /chat` endpoint.
+- [x] Step 5: Fastify `POST /chat` endpoint.
 - [ ] Step 6: import the existing CSV into a LangSmith dataset.
 - [ ] Step 7: TypeScript evaluation harness and evaluators.
 - [ ] Step 8: baseline-versus-candidate experiment comparison and reports.
@@ -77,6 +77,17 @@ disabled by default and requires one explicit LangSmith destination.
 
 Read [docs/tracing.md](docs/tracing.md) for the trace hierarchy, workspace
 configuration choices, data and privacy boundary, local verification, and
+official sources.
+
+## Step 5: HTTP API
+
+The Fastify server exposes `GET /health` and `POST /chat`. The route validates
+and normalizes HTTP input, then delegates to a small service that invokes the
+LangChain runnable and measures end-to-end latency. Route tests inject a fake
+service, so they never call OpenAI or LangSmith.
+
+Read [docs/http-api.md](docs/http-api.md) for the request and response shapes,
+local commands, architecture boundaries, test strategy, cost boundary, and
 official sources.
 
 ## Why LangChain and LangSmith?
