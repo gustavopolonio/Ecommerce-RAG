@@ -1,11 +1,49 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  DEFAULT_LANGSMITH_DATASET_NAME,
   getAppConfig,
+  getLangSmithDatasetConfig,
+  getLangSmithDatasetName,
   getLangSmithConfig,
   getOpenAIConfig,
   getServerConfig,
 } from "./env.js";
+
+describe("getLangSmithDatasetConfig", () => {
+  it("uses a stable default name for local dry runs", () => {
+    expect(getLangSmithDatasetName({})).toBe(
+      DEFAULT_LANGSMITH_DATASET_NAME,
+    );
+    expect(
+      getLangSmithDatasetName({
+        LANGSMITH_DATASET_NAME: " custom-dataset ",
+      }),
+    ).toBe("custom-dataset");
+  });
+
+  it("reads the credentials and routing used by dataset uploads", () => {
+    expect(
+      getLangSmithDatasetConfig({
+        LANGSMITH_API_KEY: " secret ",
+        LANGSMITH_ENDPOINT: " https://example.test ",
+        LANGSMITH_WORKSPACE_ID: " workspace-1 ",
+        LANGSMITH_DATASET_NAME: " DemoShop cases ",
+      }),
+    ).toEqual({
+      apiKey: "secret",
+      apiUrl: "https://example.test",
+      workspaceId: "workspace-1",
+      datasetName: "DemoShop cases",
+    });
+  });
+
+  it("requires an API key only for the upload configuration", () => {
+    expect(() => getLangSmithDatasetConfig({})).toThrow(
+      "LANGSMITH_API_KEY is required",
+    );
+  });
+});
 
 describe("getServerConfig", () => {
   it("uses local defaults and accepts explicit server settings", () => {

@@ -12,7 +12,7 @@ new evaluation workflow reaches feature parity.
 - [x] Step 3: LangChain RAG chain using the existing assistant instructions.
 - [x] Step 4: optional LangSmith tracing with a stable local trace contract.
 - [x] Step 5: Fastify `POST /chat` endpoint.
-- [ ] Step 6: import the existing CSV into a LangSmith dataset.
+- [x] Step 6: import the existing CSV into a managed LangSmith dataset.
 - [ ] Step 7: TypeScript evaluation harness and evaluators.
 - [ ] Step 8: baseline-versus-candidate experiment comparison and reports.
 - [ ] Step 9: remove Promptfoo after feature parity is verified.
@@ -89,6 +89,18 @@ service, so they never call OpenAI or LangSmith.
 Read [docs/http-api.md](docs/http-api.md) for the request and response shapes,
 local commands, architecture boundaries, test strategy, cost boundary, and
 official sources.
+
+## Step 6: LangSmith dataset import
+
+The local importer validates all 40 rows from the shared CSV and maps them into
+LangSmith inputs, reference outputs, and metadata. A dry-run prints the exact
+payload without making a network request. The separate upload command creates
+or incrementally updates the managed LangSmith dataset and must not be run
+without explicit approval.
+
+Read [docs/dataset-import.md](docs/dataset-import.md) for the field mapping,
+commands, idempotent synchronization behavior, cost boundary, and official
+sources.
 
 ## Why LangChain and LangSmith?
 

@@ -9,8 +9,16 @@ export interface ServerConfig {
   port: number;
 }
 
+export interface LangSmithDatasetConfig {
+  apiKey: string;
+  apiUrl?: string;
+  workspaceId?: string;
+  datasetName: string;
+}
+
 const DEFAULT_HOST = "127.0.0.1";
 const DEFAULT_PORT = 3001;
+export const DEFAULT_LANGSMITH_DATASET_NAME = "demoshop-rag-evaluation";
 
 export type LangSmithAgentEnvironment =
   | "local"
@@ -65,6 +73,28 @@ export function getServerConfig(
   return {
     host: env.HOST?.trim() || DEFAULT_HOST,
     port: parsePort(env.PORT),
+  };
+}
+
+export function getLangSmithDatasetName(
+  env: NodeJS.ProcessEnv = process.env,
+): string {
+  return (
+    env.LANGSMITH_DATASET_NAME?.trim() || DEFAULT_LANGSMITH_DATASET_NAME
+  );
+}
+
+export function getLangSmithDatasetConfig(
+  env: NodeJS.ProcessEnv = process.env,
+): LangSmithDatasetConfig {
+  const apiUrl = env.LANGSMITH_ENDPOINT?.trim();
+  const workspaceId = env.LANGSMITH_WORKSPACE_ID?.trim();
+
+  return {
+    apiKey: requireEnvironmentVariable(env, "LANGSMITH_API_KEY"),
+    datasetName: getLangSmithDatasetName(env),
+    ...(apiUrl ? { apiUrl } : {}),
+    ...(workspaceId ? { workspaceId } : {}),
   };
 }
 

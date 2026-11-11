@@ -9,6 +9,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "dataset:dry-run": "node --import tsx src/dataset/run-dataset-dry-run.ts",
+    "dataset:upload": "node --import tsx src/dataset/upload-langsmith-dataset.ts",
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "test": "vitest run",
@@ -19,6 +21,7 @@
   "dependencies": {
     "@langchain/core": "^1.3.5",
     "@langchain/openai": "^1.8.2",
+    "csv-parse": "^7.0.3",
     "dotenv": "^18.0.9",
     "fastify": "^5.12.8",
     "langsmith": "^0.11.8",
