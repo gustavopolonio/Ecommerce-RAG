@@ -4,7 +4,30 @@ import {
   getAppConfig,
   getLangSmithConfig,
   getOpenAIConfig,
+  getServerConfig,
 } from "./env.js";
+
+describe("getServerConfig", () => {
+  it("uses local defaults and accepts explicit server settings", () => {
+    expect(getServerConfig({})).toEqual({
+      host: "127.0.0.1",
+      port: 3001,
+    });
+    expect(getServerConfig({ HOST: " 0.0.0.0 ", PORT: " 4100 " })).toEqual({
+      host: "0.0.0.0",
+      port: 4100,
+    });
+  });
+
+  it.each(["0", "65536", "12.5", "not-a-number"])(
+    "rejects an invalid port: %s",
+    (port) => {
+      expect(() => getServerConfig({ PORT: port })).toThrow(
+        "PORT must be an integer between 1 and 65535",
+      );
+    },
+  );
+});
 
 describe("getOpenAIConfig", () => {
   it("reads and trims the OpenAI configuration", () => {

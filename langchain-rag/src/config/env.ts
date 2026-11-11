@@ -4,6 +4,14 @@ export interface OpenAIConfig {
   vectorStoreId: string;
 }
 
+export interface ServerConfig {
+  host: string;
+  port: number;
+}
+
+const DEFAULT_HOST = "127.0.0.1";
+const DEFAULT_PORT = 3001;
+
 export type LangSmithAgentEnvironment =
   | "local"
   | "development"
@@ -48,6 +56,15 @@ export function getOpenAIConfig(
       env,
       "OPENAI_VECTOR_STORE_ID",
     ),
+  };
+}
+
+export function getServerConfig(
+  env: NodeJS.ProcessEnv = process.env,
+): ServerConfig {
+  return {
+    host: env.HOST?.trim() || DEFAULT_HOST,
+    port: parsePort(env.PORT),
   };
 }
 
@@ -139,6 +156,20 @@ function parseBoolean(value: string | undefined, name: string): boolean {
   }
 
   throw new Error(`${name} must be either true or false.`);
+}
+
+function parsePort(value: string | undefined): number {
+  if (value === undefined || value.trim() === "") {
+    return DEFAULT_PORT;
+  }
+
+  const port = Number(value);
+
+  if (!Number.isInteger(port) || port < 1 || port > 65_535) {
+    throw new Error("PORT must be an integer between 1 and 65535.");
+  }
+
+  return port;
 }
 
 function requireEnvironmentVariable(
