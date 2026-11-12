@@ -37,7 +37,7 @@ const DETERMINISTIC_RULES = {
   },
   "022": {
     type: "contains_all",
-    values: ["$59", "$60", "paid in full"],
+    values: ["$60", "paid in full"],
   },
   "027": {
     type: "contains_all",
@@ -45,7 +45,7 @@ const DETERMINISTIC_RULES = {
   },
   "033": {
     type: "contains_all",
-    values: ["Adjustable Reading Lamp", "AC-202"],
+    values: ["Adjustable Reading Lamp"],
   },
   "035": {
     type: "json_product_set",

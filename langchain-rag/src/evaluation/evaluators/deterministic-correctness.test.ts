@@ -21,9 +21,9 @@ describe("deterministicCorrectnessEvaluator", () => {
         { sku: "AC-203" },
       ]),
     ],
-    ["022", "The $59 order is below $60, so it must be paid in full."],
+    ["022", "It is below $60, so it must be paid in full."],
     ["027", "The total is $74.99, below $75, plus $5 shipping."],
-    ["033", "Adjustable Reading Lamp — SKU AC-202"],
+    ["033", "Adjustable Reading Lamp can help you in the dark."],
     [
       "035",
       JSON.stringify([

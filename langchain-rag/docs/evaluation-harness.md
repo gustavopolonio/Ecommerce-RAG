@@ -83,7 +83,7 @@ Eight cases currently have deterministic rules:
 | `013` | JSON contains the exact SKU set |
 | `022` | Contains the required installment values |
 | `027` | Contains the required cart and shipping values |
-| `033` | Contains the expected product name and SKU |
+| `033` | Contains the expected product name; the SKU is optional |
 | `035` | JSON contains the exact product and allowed fields |
 | `038` | Markdown table contains both shipping methods and values |
 
