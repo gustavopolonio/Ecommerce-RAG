@@ -13,7 +13,8 @@ new evaluation workflow reaches feature parity.
 - [x] Step 4: optional LangSmith tracing with a stable local trace contract.
 - [x] Step 5: Fastify `POST /chat` endpoint.
 - [x] Step 6: import the existing CSV into a managed LangSmith dataset.
-- [ ] Step 7: TypeScript evaluation harness and evaluators.
+- [x] Step 7: TypeScript evaluation harness, evaluators, experiment runner, and
+  local report.
 - [ ] Step 8: baseline-versus-candidate experiment comparison and reports.
 - [ ] Step 9: remove Promptfoo after feature parity is verified.
 
@@ -101,6 +102,33 @@ without explicit approval.
 Read [docs/dataset-import.md](docs/dataset-import.md) for the field mapping,
 commands, idempotent synchronization behavior, cost boundary, and official
 sources.
+
+## Step 7: evaluation harness
+
+The evaluation target adapts each dataset input to the existing RAG service and
+returns the answer, retrieved sources, token usage, and latency required by the
+evaluators. Recall@5 now measures expected-document coverage in the first five
+sources, while deterministic rules validate eight exact output requirements.
+The latency evaluator records both measured milliseconds and the 15-second
+pass/fail policy. The configurable LLM judge scores semantic answer quality
+against each case rubric without running for non-rubric cases. These parts are
+covered by local tests. A free preview shows paid-operation counts, while the
+live experiment requires an explicit confirmation flag and writes a local JSON
+report.
+
+```bash
+npm run evaluation:preview
+npm run evaluation:report -- <existing-experiment-name>
+npm run evaluation:run -- --confirm-paid
+```
+
+The report command only reads an existing LangSmith experiment and makes no
+OpenAI calls. The final command can make paid OpenAI calls and create a
+LangSmith experiment. Review the preview first. No live experiment runs during
+tests, typecheck, or build.
+
+Read [docs/evaluation-harness.md](docs/evaluation-harness.md) for the target
+contract, data flow, remaining parts, cost boundary, and official sources.
 
 ## Why LangChain and LangSmith?
 

@@ -1,4 +1,4 @@
-import type { Runnable } from "@langchain/core/runnables";
+import type { Runnable, RunnableConfig } from "@langchain/core/runnables";
 
 import type { DemoShopRagResult } from "../rag/demo-shop-rag-chain.js";
 
@@ -8,6 +8,7 @@ export interface DemoShopRagServiceResult extends DemoShopRagResult {
 
 export type DemoShopRagService = (
   question: string,
+  config?: RunnableConfig,
 ) => Promise<DemoShopRagServiceResult>;
 
 export interface DemoShopRagServiceDependencies {
@@ -19,9 +20,9 @@ export function createDemoShopRagService({
   chain,
   now = performance.now.bind(performance),
 }: DemoShopRagServiceDependencies): DemoShopRagService {
-  return async (question) => {
+  return async (question, config) => {
     const startedAt = now();
-    const result = await chain.invoke(question);
+    const result = await chain.invoke(question, config);
 
     return {
       ...result,

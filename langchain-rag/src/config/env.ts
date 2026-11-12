@@ -4,6 +4,17 @@ export interface OpenAIConfig {
   vectorStoreId: string;
 }
 
+export interface OpenAIJudgeConfig {
+  apiKey: string;
+  model: string;
+}
+
+export interface EvaluationExperimentConfig {
+  experimentPrefix: string;
+  maxConcurrency: number;
+  reportDirectory: string;
+}
+
 export interface ServerConfig {
   host: string;
   port: number;
@@ -19,6 +30,9 @@ export interface LangSmithDatasetConfig {
 const DEFAULT_HOST = "127.0.0.1";
 const DEFAULT_PORT = 3001;
 export const DEFAULT_LANGSMITH_DATASET_NAME = "demoshop-rag-evaluation";
+export const DEFAULT_EVALUATION_EXPERIMENT_PREFIX = "demoshop-rag";
+export const DEFAULT_EVALUATION_MAX_CONCURRENCY = 2;
+export const DEFAULT_EVALUATION_REPORT_DIRECTORY = "results";
 
 export type LangSmithAgentEnvironment =
   | "local"
@@ -64,6 +78,33 @@ export function getOpenAIConfig(
       env,
       "OPENAI_VECTOR_STORE_ID",
     ),
+  };
+}
+
+export function getOpenAIJudgeConfig(
+  env: NodeJS.ProcessEnv = process.env,
+): OpenAIJudgeConfig {
+  return {
+    apiKey: requireEnvironmentVariable(env, "OPENAI_API_KEY"),
+    model: requireEnvironmentVariable(env, "OPENAI_JUDGE_MODEL"),
+  };
+}
+
+export function getEvaluationExperimentConfig(
+  env: NodeJS.ProcessEnv = process.env,
+): EvaluationExperimentConfig {
+  return {
+    experimentPrefix:
+      env.EVALUATION_EXPERIMENT_PREFIX?.trim() ||
+      DEFAULT_EVALUATION_EXPERIMENT_PREFIX,
+    maxConcurrency: parsePositiveInteger(
+      env.EVALUATION_MAX_CONCURRENCY,
+      "EVALUATION_MAX_CONCURRENCY",
+      DEFAULT_EVALUATION_MAX_CONCURRENCY,
+    ),
+    reportDirectory:
+      env.EVALUATION_REPORT_DIRECTORY?.trim() ||
+      DEFAULT_EVALUATION_REPORT_DIRECTORY,
   };
 }
 
@@ -202,11 +243,30 @@ function parsePort(value: string | undefined): number {
   return port;
 }
 
+function parsePositiveInteger(
+  value: string | undefined,
+  name: string,
+  defaultValue: number,
+): number {
+  if (value === undefined || value.trim() === "") {
+    return defaultValue;
+  }
+
+  const parsed = Number(value);
+
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    throw new Error(`${name} must be a positive integer.`);
+  }
+
+  return parsed;
+}
+
 function requireEnvironmentVariable(
   env: NodeJS.ProcessEnv,
   name:
     | "LANGSMITH_API_KEY"
     | "OPENAI_API_KEY"
+    | "OPENAI_JUDGE_MODEL"
     | "OPENAI_MODEL"
     | "OPENAI_VECTOR_STORE_ID",
 ): string {

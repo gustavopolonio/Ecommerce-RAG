@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-11T00:00:00.000Z",
+  "experiment": {
+    "experimentName": "demoshop-rag-baseline-example",
+    "datasetName": "demoshop-rag-evaluation",
+    "experimentPrefix": "demoshop-rag-baseline",
+    "ragModel": "configured-rag-model",
+    "judgeModel": "configured-judge-model",
+    "maxConcurrency": 2
+  },
+  "policy": {
+    "recallAtFive": 1,
+    "deterministicCorrectness": 1,
+    "answerQuality": 0.8,
+    "maximumLatencyMs": 15000
+  },
+  "summary": {
+    "totalCases": 1,
+    "passedCases": 1,
+    "failedCases": 0,
+    "runErrors": 0,
+    "tokenUsage": {
+      "inputTokens": 120,
+      "outputTokens": 18,
+      "totalTokens": 138
+    },
+    "metrics": {
+      "retrieval_recall_at_5": {
+        "applicableCount": 1,
+        "nullCount": 0,
+        "averageNumericScore": 1
+      },
+      "answer_quality": {
+        "applicableCount": 1,
+        "nullCount": 0,
+        "averageNumericScore": 0.9
+      },
+      "answer_quality_pass": {
+        "applicableCount": 1,
+        "nullCount": 0,
+        "trueCount": 1,
+        "falseCount": 0
+      }
+    }
+  },
+  "cases": [
+    {
+      "caseId": "001",
+      "exampleId": "example-001",
+      "runId": "run-001",
+      "question": "Can I pay by Pix?",
+      "answer": "Yes. DemoShop accepts Pix.",
+      "sources": [
+        {
+          "documentId": "DOC-001",
+          "score": 0.91
+        }
+      ],
+      "latencyMs": 1234.56,
+      "usage": {
+        "inputTokens": 120,
+        "outputTokens": 18,
+        "totalTokens": 138
+      },
+      "error": null,
+      "passed": true,
+      "failedGates": [],
+      "scores": {
+        "retrieval_recall_at_5": {
+          "score": 1,
+          "comment": "Retrieved all expected documents in the top 5: DOC-001."
+        },
+        "deterministic_correctness": {
+          "score": null,
+          "comment": "Deterministic correctness is not applicable to this case."
+        },
+        "answer_quality": {
+          "score": 0.9,
+          "comment": "The answer satisfies the payment-policy rubric."
+        },
+        "answer_quality_pass": {
+          "score": true,
+          "comment": "The answer satisfies the payment-policy rubric."
+        },
+        "latency_ms": {
+          "score": 1234.56,
+          "comment": "Latency 1234.56 ms was within the 15000 ms limit."
+        },
+        "latency_within_threshold": {
+          "score": true,
+          "comment": "Latency 1234.56 ms was within the 15000 ms limit."
+        }
+      }
+    }
+  ]
+}

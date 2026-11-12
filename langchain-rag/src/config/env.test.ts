@@ -1,14 +1,52 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  DEFAULT_EVALUATION_EXPERIMENT_PREFIX,
+  DEFAULT_EVALUATION_MAX_CONCURRENCY,
+  DEFAULT_EVALUATION_REPORT_DIRECTORY,
   DEFAULT_LANGSMITH_DATASET_NAME,
   getAppConfig,
+  getEvaluationExperimentConfig,
   getLangSmithDatasetConfig,
   getLangSmithDatasetName,
   getLangSmithConfig,
   getOpenAIConfig,
+  getOpenAIJudgeConfig,
   getServerConfig,
 } from "./env.js";
+
+describe("getEvaluationExperimentConfig", () => {
+  it("uses safe, repeatable local defaults", () => {
+    expect(getEvaluationExperimentConfig({})).toEqual({
+      experimentPrefix: DEFAULT_EVALUATION_EXPERIMENT_PREFIX,
+      maxConcurrency: DEFAULT_EVALUATION_MAX_CONCURRENCY,
+      reportDirectory: DEFAULT_EVALUATION_REPORT_DIRECTORY,
+    });
+  });
+
+  it("accepts explicit experiment settings", () => {
+    expect(
+      getEvaluationExperimentConfig({
+        EVALUATION_EXPERIMENT_PREFIX: " baseline-v1 ",
+        EVALUATION_MAX_CONCURRENCY: " 4 ",
+        EVALUATION_REPORT_DIRECTORY: " artifacts/evaluations ",
+      }),
+    ).toEqual({
+      experimentPrefix: "baseline-v1",
+      maxConcurrency: 4,
+      reportDirectory: "artifacts/evaluations",
+    });
+  });
+
+  it.each(["0", "-1", "1.5", "many"])(
+    "rejects invalid evaluation concurrency: %s",
+    (value) => {
+      expect(() =>
+        getEvaluationExperimentConfig({ EVALUATION_MAX_CONCURRENCY: value }),
+      ).toThrow("EVALUATION_MAX_CONCURRENCY must be a positive integer");
+    },
+  );
+});
 
 describe("getLangSmithDatasetConfig", () => {
   it("uses a stable default name for local dry runs", () => {
@@ -89,6 +127,23 @@ describe("getOpenAIConfig", () => {
         OPENAI_MODEL: "test-model",
       }),
     ).toThrow("OPENAI_VECTOR_STORE_ID is required");
+  });
+});
+
+describe("getOpenAIJudgeConfig", () => {
+  it("uses a separate model for paid answer-quality judgments", () => {
+    expect(
+      getOpenAIJudgeConfig({
+        OPENAI_API_KEY: " secret ",
+        OPENAI_JUDGE_MODEL: " judge-model ",
+      }),
+    ).toEqual({ apiKey: "secret", model: "judge-model" });
+  });
+
+  it("requires an explicit judge model before a paid evaluation", () => {
+    expect(() =>
+      getOpenAIJudgeConfig({ OPENAI_API_KEY: "secret" }),
+    ).toThrow("OPENAI_JUDGE_MODEL is required");
   });
 });
 
