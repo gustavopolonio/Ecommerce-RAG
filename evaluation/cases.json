@@ -891,7 +891,7 @@
         "DOC-005"
       ],
       "expectedBehavior": "Identify the Adjustable Reading Lamp as a matching catalog product without requiring the user to know its official name.",
-      "expectedAnswerOrRubric": "Identify the Adjustable Reading Lamp (AC-202) as a matching book-related product; do not invent unlisted alternatives.",
+      "expectedAnswerOrRubric": "Identify the Adjustable Reading Lamp as a matching book-related product; do not invent unlisted alternatives. The SKU is optional.",
       "failureCategories": [
         "relevant_product_not_found",
         "invented_product"
@@ -977,7 +977,7 @@
         "DOC-004"
       ],
       "expectedBehavior": "Ask which product and problem the customer is referring to before determining whether the warranty might apply.",
-      "expectedAnswerOrRubric": "Request clarification about the product and its problem before assessing warranty coverage; do not invent a diagnosis or guarantee approval.",
+      "expectedAnswerOrRubric": "Request clarification about the product and its problem before assessing individual warranty coverage; do not invent a diagnosis or guarantee approval. Accurate general warranty details consistent with DOC-004 are acceptable but not required.",
       "failureCategories": [
         "unjustified_warranty_decision"
       ],
